@@ -64,7 +64,7 @@ generate_post_data()
         },
         "author": {
             "name": "${PRE_GITLAB_USER_NAME}",
-            "url": "${CI_SERVER_URL}/${PRE_GITLAB_USER_NAME}",
+            "url": "${CI_SERVER_URL}/${PRE_GITLAB_USER_LOGIN}",
             "icon_url": "https://cdn.iconscout.com/icon/free/png-512/avatar-375-456327.png"
         },
         "thumbnail": {
@@ -103,11 +103,8 @@ EOF
 
 $(generate_post_data)
 
-curl -S -L -f \
--X POST "${DISCORD_WEBHOOK}" \
--H "Content-Type: application/json" \
---data-binary "@data.json"
-
 if [[ "$1" = "-v" ]]; then
     cat data.json
 fi
+
+curl -S -L --fail -X POST "${DISCORD_WEBHOOK}" -H "Content-Type: application/json" --data-binary "@data.json" || exit 1
