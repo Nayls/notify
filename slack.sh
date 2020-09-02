@@ -43,11 +43,21 @@
 : ${PRE_GITLAB_USER_EMAIL:="undefined"}
 
 # PYTEST INFO =================================================================
-: ${PASSED_VALUE:="undefined"}
-: ${FAILED_VALUE:="undefined"}
-: ${XFAILED_VALUE:="undefined"}
-: ${SKIPPED_VALUE:="undefined"}
-: ${DURATION_VALUE:="undefined"}
+: ${PYTEST_RESULT_PATH:="results/pytest_result.json"}
+
+if [ -f "${PYTEST_RESULT_PATH}" ]; then
+    : ${PASSED_VALUE:=$(cat results/pytest_result.json | jq -r '.passed')}
+    : ${FAILED_VALUE:=$(cat results/pytest_result.json | jq -r '.failed')}
+    : ${XFAILED_VALUE:=$(cat results/pytest_result.json | jq -r '.xfailed')}
+    : ${SKIPPED_VALUE:=$(cat results/pytest_result.json | jq -r '.skipped')}
+    : ${DURATION_VALUE:=$(cat results/pytest_result.json | jq -r '.duration')}
+else
+    : ${PASSED_VALUE:="undefined"}
+    : ${FAILED_VALUE:="undefined"}
+    : ${XFAILED_VALUE:="undefined"}
+    : ${SKIPPED_VALUE:="undefined"}
+    : ${DURATION_VALUE:="undefined"}
+fi
 
 generate_post_data()
 {
