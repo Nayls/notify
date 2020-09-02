@@ -8,13 +8,14 @@
 ```
 DOCKER_BUILDKIT=1 docker build -t nayls-cloud/notify ./
 ```
+
 Discord preview
 
-![discord](doc/notify-discord.png)
+![discord](https://live.staticflickr.com/65535/50298275941_aae42e9dd2_o.png)
 
 Slack preview
 
-![slack](doc/notify-slack.png)
+![slack](https://live.staticflickr.com/65535/50298276796_2ac3932636_o.png)
 
 ## How to use
 
