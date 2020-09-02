@@ -24,18 +24,25 @@ Pipeline - Trigger project
 stages:
     - trigger
 
-test-trigger:
+test-project-trigger:
     stage: trigger
     variables:
-        PRE_CI_ENVIRONMENT_SLUG: test
-        PRE_CI_ENVIRONMENT_URL: https://google.com
+        PRE_CI_SERVER_URL: ${CI_SERVER_URL}
 
-        PRE_CI_PIPELINE_URL: ${CI_PIPELINE_URL}
+        PRE_CI_ENVIRONMENT_SLUG: test
+        PRE_CI_ENVIRONMENT_URL: https://undefined.localhost/
+
         PRE_CI_PIPELINE_SOURCE: ${CI_PIPELINE_SOURCE}
+        PRE_CI_PIPELINE_URL: ${CI_PIPELINE_URL}
         PRE_CI_PIPELINE_ID: ${CI_PIPELINE_ID}
 
         PRE_CI_COMMIT_REF_NAME: ${CI_COMMIT_REF_NAME}
         PRE_CI_COMMIT_SHA: ${CI_COMMIT_SHA}
+
+        PRE_CI_COMMIT_REF_NAME: ${PRE_CI_COMMIT_REF_NAME}
+        PRE_CI_COMMIT_REF_SLUG: ${PRE_CI_COMMIT_REF_SLUG}
+        PRE_CI_COMMIT_SHA: ${PRE_CI_COMMIT_SHA}
+        PRE_CI_COMMIT_SHORT_SHA: ${PRE_CI_COMMIT_SHORT_SHA}
 
         PRE_CI_JOB_NAME: ${CI_JOB_NAME}
 
@@ -57,47 +64,44 @@ Pipeline test project
 
 ```yaml
 
-discord:
-  image: naylscloud/curl:7.69
-  stage: notify
+.discord:
+  image: naylscloud/notify:latest
+  stage: inform
   variables:
     GIT_STRATEGY: none
-
-    DISCORD_WEBHOOK: "http://google.com"
-    DISCORD_ROLE_QA: "undefined"
-
-    PRE_CI_ENVIRONMENT_SLUG: "undefined"
-    PRE_CI_ENVIRONMENT_URL: "undefined"
-
-    PRE_CI_PIPELINE_URL: "undefined"
-    PRE_CI_PIPELINE_SOURCE: "undefined"
-    PRE_CI_PIPELINE_ID: "undefined"
-
-    PRE_CI_COMMIT_REF_NAME: "undefined"
-    PRE_CI_COMMIT_SHA: "undefined"
-
-    PRE_CI_JOB_NAME: "undefined"
-
-    PRE_CI_PROJECT_NAME: "undefined"
-    PRE_CI_PROJECT_TITLE: "undefined"
-    PRE_CI_PROJECT_URL: "undefined"
-    PRE_CI_PROJECT_PATH: "undefined"
-
-    PRE_GITLAB_USER_NAME: "undefined"
-    PRE_GITLAB_USER_LOGIN: "undefined"
-    PRE_GITLAB_USER_EMAIL: "undefined"
-
-    PASSED_VALUE: "undefined"
-    FAILED_VALUE: "undefined"
-    XFAILED_VALUE: "undefined"
-    SKIPPED_VALUE: "undefined"
-    DURATION_VALUE: "undefined"
+    # DISCORD_WEBHOOK: "https://discordapp.com/api/webhooks/<secret>"
+    # DISCORD_PING_ROLES: "<@&idrole>" # \@role in discord chat
+  dependencies:
+    - e2e
   before_script:
     - PASSED_VALUE=$(cat results/pytest_result.json | jq -r '.passed')
     - FAILED_VALUE=$(cat results/pytest_result.json | jq -r '.failed')
     - XFAILED_VALUE=$(cat results/pytest_result.json | jq -r '.xfailed')
     - SKIPPED_VALUE=$(cat results/pytest_result.json | jq -r '.skipped')
     - DURATION_VALUE=$(cat results/pytest_result.json | jq -r '.duration')
+  script:
+    - discord -v
+```
+
+```yaml
+slack:
+  image: naylscloud/notify:latest
+  stage: inform
+  variables:
+    GIT_STRATEGY: none
+    # SLACK_WEBHOOK: "https://hooks.slack.com/services/<secret>"
+    # SLACK_CHANNEL: "#general"
+    # SLACK_PING_ROLES: "@nayls"
+  dependencies:
+    - e2e
+  before_script:
+    - PASSED_VALUE=$(cat results/pytest_result.json | jq -r '.passed')
+    - FAILED_VALUE=$(cat results/pytest_result.json | jq -r '.failed')
+    - XFAILED_VALUE=$(cat results/pytest_result.json | jq -r '.xfailed')
+    - SKIPPED_VALUE=$(cat results/pytest_result.json | jq -r '.skipped')
+    - DURATION_VALUE=$(cat results/pytest_result.json | jq -r '.duration')
+  script:
+    - slack -v
 ```
 
 Add in conftest.py
