@@ -54,7 +54,7 @@ generate_post_data()
         {
 	        "mrkdwn_in": ["text"],
             "color": "${SLACK_ATTACHMENT_COLOR}",
-            "pretext": "\n**${PRE_GITLAB_USER_NAME} (${PRE_GITLAB_USER_EMAIL})** in the project **[${PRE_CI_PROJECT_TITLE}]($PRE_CI_PROJECT_URL)** has been run for the environment - **${PRE_CI_ENVIRONMENT_SLUG}**.",
+            "pretext": "\n*${PRE_GITLAB_USER_NAME} (${PRE_GITLAB_USER_EMAIL})* in the project *[${PRE_CI_PROJECT_TITLE}]($PRE_CI_PROJECT_URL)* has been run for the environment - *${PRE_CI_ENVIRONMENT_SLUG}*.",
             "author_name": "${PRE_GITLAB_USER_NAME}",
             "author_link": "${CI_SERVER_URL}/${PRE_GITLAB_USER_LOGIN}",
             "author_icon": "https://cdn.iconscout.com/icon/free/png-512/avatar-375-456327.png",
@@ -68,13 +68,18 @@ generate_post_data()
                     "short": true
                 },
                 {
-                    "title": "Failed / xFailed",
-                    "value": "${FAILED_VALUE} / ${XFAILED_VALUE}",
+                    "title": "Skipped",
+                    "value": "${SKIPPED_VALUE}",
                     "short": true
                 },
                 {
-                    "title": "Skipped",
-                    "value": "A second short field's value",
+                    "title": "Failed ",
+                    "value": "${FAILED_VALUE}",
+                    "short": true
+                },
+                {
+                    "title": "xFailed",
+                    "value": "${XFAILED_VALUE}",
                     "short": true
                 },
                 {
