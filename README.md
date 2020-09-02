@@ -71,6 +71,11 @@ Pipeline test project
     GIT_STRATEGY: none
     # DISCORD_WEBHOOK: "https://discordapp.com/api/webhooks/<secret>"
     # DISCORD_PING_ROLES: "<@&idrole>" # \@role in discord chat
+    PASSED_VALUE: "undefined"
+    FAILED_VALUE: "undefined"
+    XFAILED_VALUE: "undefined"
+    SKIPPED_VALUE: "undefined"
+    DURATION_VALUE: "undefined"
   dependencies:
     - e2e
   before_script:
@@ -92,6 +97,11 @@ slack:
     # SLACK_WEBHOOK: "https://hooks.slack.com/services/<secret>"
     # SLACK_CHANNEL: "#general"
     # SLACK_PING_ROLES: "@nayls"
+    PASSED_VALUE: "undefined"
+    FAILED_VALUE: "undefined"
+    XFAILED_VALUE: "undefined"
+    SKIPPED_VALUE: "undefined"
+    DURATION_VALUE: "undefined"
   dependencies:
     - e2e
   before_script:
