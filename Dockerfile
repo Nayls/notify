@@ -12,3 +12,4 @@ RUN apk add --update --no-cache \
         make
 
 COPY discord.sh /usr/local/bin/discord
+COPY slack.sh /usr/local/bin/slack
