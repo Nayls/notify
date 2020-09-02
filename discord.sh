@@ -117,10 +117,10 @@ generate_post_data()
 EOF
 }
 
-# $(generate_post_data)
+$(generate_post_data)
 
 if [[ "$1" = "-v" ]]; then
     cat data.json
 fi
 
-# curl -S -L --fail -X POST "${DISCORD_WEBHOOK}" -H "Content-Type: application/json" --data-binary "@data.json" || exit 1
+curl -S -L --fail -X POST "${DISCORD_WEBHOOK}" -H "Content-Type: application/json" --data-binary "@data.json" || exit 1
