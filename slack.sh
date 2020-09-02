@@ -6,6 +6,7 @@
 : ${SLACK_CHANNEL:="@undefined"}
 : ${SLACK_ICON_URL:="https://img.icons8.com/dusk/100/000000/appointment-reminders.png"}
 : ${SLACK_ATTACHMENT_COLOR:="#76c6f5"}
+: ${SLACK_PING_ROLES:=""}
 
 # TEST CI BLOCK ===============================================================
 : ${CI_PAGES_URL:="http://undefined.localhost"}
@@ -14,8 +15,6 @@
 : ${CI_PIPELINE_ID:="undefined"}
 : ${CI_PROJECT_PATH:="undefined/undefined"}
 : ${CI_PROJECT_URL:="http://undefined.localhost"}
-: ${CI_COMMIT_SHA:="123123123123123123123"}
-: ${CI_COMMIT_SHORT_SHA:="12312312"}
 
 # TRIGGER PROJECT BLOCK =======================================================
 : ${PRE_CI_SERVER_URL:="http://undefined.localhost"}
@@ -29,8 +28,8 @@
 
 : ${PRE_CI_COMMIT_REF_NAME:="undefined"}
 : ${PRE_CI_COMMIT_REF_SLUG:="undefined"}
-: ${PRE_CI_COMMIT_SHA:="undefined"}
-: ${PRE_CI_COMMIT_SHORT_SHA:="undefined"}
+: ${PRE_CI_COMMIT_SHA:="123123123123123123123"}
+: ${PRE_CI_COMMIT_SHORT_SHA:="12312312"}
 
 : ${PRE_CI_JOB_NAME:="undefined"}
 
@@ -62,7 +61,7 @@ generate_post_data()
         {
 	        "mrkdwn_in": ["text"],
             "color": "${SLACK_ATTACHMENT_COLOR}",
-            "pretext": "\n*${PRE_GITLAB_USER_NAME} (${PRE_GITLAB_USER_EMAIL})* in the project *<${PRE_CI_PROJECT_URL}|${PRE_CI_PROJECT_TITLE}>* has been run for the environment - *${PRE_CI_ENVIRONMENT_SLUG}*.",
+            "pretext": "\n${SLACK_PING_ROLES}\n*${PRE_GITLAB_USER_NAME} (${PRE_GITLAB_USER_EMAIL})* in the project *<${PRE_CI_PROJECT_URL}|${PRE_CI_PROJECT_TITLE}>* has been run for the environment - *<${PRE_CI_ENVIRONMENT_URL}|${PRE_CI_ENVIRONMENT_SLUG}>*.",
             "author_name": "${PRE_GITLAB_USER_NAME}",
             "author_link": "${CI_SERVER_URL}/${PRE_GITLAB_USER_LOGIN}",
             "author_icon": "https://cdn.iconscout.com/icon/free/png-512/avatar-375-456327.png",
@@ -92,7 +91,7 @@ generate_post_data()
                 },
                 {
                     "title": "Trigger project",
-                    "value": "- environment: ${PRE_CI_ENVIRONMENT_SLUG} \n- repo: <${PRE_CI_PROJECT_URL}|${PRE_CI_PROJECT_PATH}> \n- pipeline: <${PRE_CI_PIPELINE_URL}|${PRE_CI_PIPELINE_ID}> \n- branch: <${PRE_CI_PROJECT_URL}/-/tree/${PRE_CI_COMMIT_REF_SLUG}|${PRE_CI_COMMIT_REF_NAME}> \n- commit: <${PRE_CI_PROJECT_URL}/-/commit/${PRE_CI_COMMIT_SHA}|${PRE_CI_COMMIT_SHORT_SHA}> \n- user: <${PRE_CI_SERVER_URL}/${PRE_GITLAB_USER_LOGIN}|${PRE_GITLAB_USER_NAME}> \n- email: ${PRE_GITLAB_USER_EMAIL} \n",
+                    "value": "- environment: <${PRE_CI_ENVIRONMENT_URL}|${PRE_CI_ENVIRONMENT_SLUG}> \n- repo: <${PRE_CI_PROJECT_URL}|${PRE_CI_PROJECT_PATH}> \n- pipeline: <${PRE_CI_PIPELINE_URL}|${PRE_CI_PIPELINE_ID}> \n- branch: <${PRE_CI_PROJECT_URL}/-/tree/${PRE_CI_COMMIT_REF_SLUG}|${PRE_CI_COMMIT_REF_NAME}> \n- commit: <${PRE_CI_PROJECT_URL}/-/commit/${PRE_CI_COMMIT_SHA}|${PRE_CI_COMMIT_SHORT_SHA}> \n- user: <${PRE_CI_SERVER_URL}/${PRE_GITLAB_USER_LOGIN}|${PRE_GITLAB_USER_NAME}> \n- email: ${PRE_GITLAB_USER_EMAIL} \n",
                     "short": false
                 }
             ],
