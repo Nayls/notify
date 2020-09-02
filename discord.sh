@@ -3,32 +3,40 @@
 # DISCORD =====================================================================
 : ${DISCORD_SENDER:="AllureBot"}
 : ${DISCORD_USERNAME:="AutoTest Informer"}
-: ${DISCORD_WEBHOOK:="undefined"}
+: ${DISCORD_WEBHOOK:="http://undefined.localhost"}
 : ${DISCORD_ROLE_QA:=""}
 
 # TEST CI BLOCK ===============================================================
-: ${CI_PAGES_URL:="undefined"}
-: ${CI_SERVER_URL:="undefined"}
-: ${CI_PROJECT_PATH:="undefined"}
+: ${CI_PAGES_URL:="http://undefined.localhost"}
+: ${CI_SERVER_URL:="http://undefined.localhost"}
+: ${CI_PIPELINE_URL:="http://undefined.localhost"}
 : ${CI_PIPELINE_ID:="undefined"}
+: ${CI_PROJECT_PATH:="undefined/undefined"}
+: ${CI_PROJECT_URL:="http://undefined.localhost"}
+: ${CI_COMMIT_SHA:="123123123123123123123"}
+: ${CI_COMMIT_SHORT_SHA:="12312312"}
 
 # TRIGGER PROJECT BLOCK =======================================================
-: ${PRE_CI_ENVIRONMENT_SLUG:="undefined"}
-: ${PRE_CI_ENVIRONMENT_URL:="undefined"}
+: ${PRE_CI_SERVER_URL:="http://undefined.localhost"}
 
-: ${PRE_CI_PIPELINE_URL:="undefined"}
+: ${PRE_CI_ENVIRONMENT_SLUG:="undefined"}
+: ${PRE_CI_ENVIRONMENT_URL:="http://undefined.localhost"}
+
 : ${PRE_CI_PIPELINE_SOURCE:="undefined"}
+: ${PRE_CI_PIPELINE_URL:="http://undefined.localhost"}
 : ${PRE_CI_PIPELINE_ID:="undefined"}
 
 : ${PRE_CI_COMMIT_REF_NAME:="undefined"}
+: ${PRE_CI_COMMIT_REF_SLUG:="undefined"}
 : ${PRE_CI_COMMIT_SHA:="undefined"}
+: ${PRE_CI_COMMIT_SHORT_SHA:="undefined"}
 
 : ${PRE_CI_JOB_NAME:="undefined"}
 
 : ${PRE_CI_PROJECT_NAME:="undefined"}
 : ${PRE_CI_PROJECT_TITLE:="undefined"}
-: ${PRE_CI_PROJECT_URL:="undefined"}
-: ${PRE_CI_PROJECT_PATH:="undefined"}
+: ${PRE_CI_PROJECT_URL:="http://undefined.localhost"}
+: ${PRE_CI_PROJECT_PATH:="undefined/undefined"}
 
 : ${PRE_GITLAB_USER_NAME:="undefined"}
 : ${PRE_GITLAB_USER_LOGIN:="undefined"}
@@ -92,7 +100,7 @@ generate_post_data()
             },
             {
                 "name": "Trigger project",
-                "value": "- environment: ${PRE_CI_ENVIRONMENT_SLUG} \n- repo: [${PRE_CI_PROJECT_PATH}](${PRE_CI_PROJECT_URL}) \n- pipeline: [${PRE_CI_PIPELINE_ID}](${PRE_CI_PIPELINE_URL}) \n- branch: ${PRE_CI_COMMIT_REF_NAME} \n- user: ${PRE_GITLAB_USER_NAME} \n- email: ${PRE_GITLAB_USER_EMAIL} \n",
+                "value": "- environment: ${PRE_CI_ENVIRONMENT_SLUG} \n- repo: [${PRE_CI_PROJECT_PATH}](${PRE_CI_PROJECT_URL}) \n- pipeline: [${PRE_CI_PIPELINE_ID}](${PRE_CI_PIPELINE_URL}) \n- branch: [${PRE_CI_COMMIT_REF_NAME}](${PRE_CI_PROJECT_URL}/-/tree/${PRE_CI_COMMIT_REF_SLUG}) \n- commit: [${PRE_CI_COMMIT_SHORT_SHA}](${PRE_CI_PROJECT_URL}/-/commit/${PRE_CI_COMMIT_SHA}) \n- user: [${PRE_GITLAB_USER_NAME}](${PRE_CI_SERVER_URL}/${PRE_GITLAB_USER_LOGIN}) \n- email: ${PRE_GITLAB_USER_EMAIL} \n",
                 "inline": false
             }
         ]
