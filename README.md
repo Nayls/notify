@@ -1,5 +1,9 @@
 # notify
 
+Docker image with frequently used packages `jq`, `gettext`, `curl`, `openssl`, `ca-certificates`, `bash`, `make`, and scripts for sending notifications to `Discord` and `Slack` about the status of passing tests.
+
+Implemented only for `PyTest`.
+
 [![](https://images.microbadger.com/badges/version/naylscloud/notify:latest.svg)](https://microbadger.com/images/naylscloud/notify:latest)
 [![](https://images.microbadger.com/badges/image/naylscloud/notify:latest.svg)](https://microbadger.com/images/naylscloud/notify:latest)
 
