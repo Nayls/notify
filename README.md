@@ -1,17 +1,8 @@
-# notify
+# Notify
 
-Docker image with frequently used packages `jq`, `gettext`, `curl`, `openssl`, `ca-certificates`, `bash`, `make`, and scripts for sending notifications to `Discord` and `Slack` about the status of passing tests.
+Docker image with frequently used packages `jq`, `gettext`, `curl`, `openssl`, `ca-certificates`, `bash`, `make`, and `Bash` scripts for sending notifications to `Discord` and `Slack` about the status of passing `Pytest` tests.
 
 Implemented only for `PyTest`.
-
-[![](https://images.microbadger.com/badges/version/naylscloud/notify:latest.svg)](https://microbadger.com/images/naylscloud/notify:latest)
-[![](https://images.microbadger.com/badges/image/naylscloud/notify:latest.svg)](https://microbadger.com/images/naylscloud/notify:latest)
-
-> `1.1`,`latest`
-
-```
-DOCKER_BUILDKIT=1 docker build -t nayls-cloud/notify ./
-```
 
 Discord preview
 
@@ -21,9 +12,97 @@ Slack preview
 
 ![slack](https://live.staticflickr.com/65535/50298276796_2ac3932636_o.png)
 
-## How to use
+## Getting Started
 
-Pipeline - Trigger project
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Prerequisites
+
+What things you need to install the software and how to install them
+
+```bash
+# OpenSUSE
+zypper install jq curl bash
+```
+or
+```bash
+# Ubuntu/Debian
+apt install jq curl bash
+```
+
+If you want to build a docker image, you need docker installed on your system.
+How to install docker in [OpenSUSE](https://en.opensuse.org/Docker) or [Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+
+### Installing
+
+A step by step series of examples that tell you have to get a development env running
+
+Add `conftest.py` to the end so that after running the tests, the results of the run appear in the console and as a file pytest_result.json
+
+```python
+def pytest_terminal_summary(terminalreporter, exitstatus, config):
+    import time
+    passed_count = len(terminalreporter.stats.get("passed", []))
+    failed_count = len(terminalreporter.stats.get("failed", []))
+    xfailed_count = len(terminalreporter.stats.get("xfailed", []))
+    skipped_count = len(terminalreporter.stats.get("skipped", []))
+    duration = format(time.time() - terminalreporter._sessionstarttime, '.3f')
+
+    print("passed amount:", passed_count)
+    print("failed amount:", failed_count)
+    print("xfailed amount:", xfailed_count)
+    print("skipped amount:", skipped_count)
+    print("duration:", duration)
+
+    import json
+    data = {}
+    data["passed"] = passed_count
+    data["failed"] = failed_count
+    data["xfailed"] = xfailed_count
+    data["skipped"] = skipped_count
+    data["duration"] = duration
+
+    with open("results/pytest_result.json", "w") as outfile:
+        json.dump(data, outfile)
+```
+
+Now you can run py test and see the result in the console. it will also be in the file, `results/pytest_result.json`
+
+```bash
+pytest -rsq
+    --strict-markers
+    --tb=short
+    --color=yes
+```
+
+This is example console output after running tests
+
+```bash
+----------------------------- Captured log setup -----------------------------
+passed amount: 1
+failed amount: 1
+xfailed amount: 0
+skipped amount: 0
+duration: 45.272
+========================= 1 failed, 1 passed in 45.27s ========================
+```
+
+The `results/pytest_result.json` file will also appear, which is used for uploading as artifact from `e2e` job to `discord` or `slack`
+
+```json
+{"passed": 1, "failed": 1, "xfailed": 0, "skipped": 0, "duration": "45.272"}
+```
+
+To send a notification, you must either override all variables found in `discord.sh` or `slack.sh` or run from the console, for example
+
+```bash
+DISCORD_WEBHOOK=https://discordapp.com/api/webhooks/<secret> discord.sh -v
+```
+
+## Deployment
+
+Add a job to the project that will trigger your project with tests
+Here it is extremely important to pass pre_* variables to the project with tests.
 
 ```yaml
 stages:
@@ -65,7 +144,7 @@ test-project-trigger:
         strategy: depend
 ```
 
-Pipeline test project
+Example .gitlab-ci. yml of the project where your tests are locate
 
 ```yaml
 workflow:
@@ -147,31 +226,26 @@ slack:
     - when: never
 ```
 
-Add in conftest.py
+## Built With
 
-```python
-def pytest_terminal_summary(terminalreporter, exitstatus, config):
-    import time
-    passed_count = len(terminalreporter.stats.get("passed", []))
-    failed_count = len(terminalreporter.stats.get("failed", []))
-    xfailed_count = len(terminalreporter.stats.get("xfailed", []))
-    skipped_count = len(terminalreporter.stats.get("skipped", []))
-    duration = format(time.time() - terminalreporter._sessionstarttime, '.3f')
+* [bash](https://www.gnu.org/software/bash/bash.html) - The GNU Bourne Again shell
+* [curl](https://curl.haxx.se/) - An URL retrieval utility and library
+* [jq](https://stedolan.github.io/jq/) - Command-line JSON processor
 
-    print("passed amount:", passed_count)
-    print("failed amount:", failed_count)
-    print("xfailed amount:", xfailed_count)
-    print("skipped amount:", skipped_count)
-    print("duration:", duration)
+## Contributing
 
-    import json
-    data = {}
-    data["passed"] = passed_count
-    data["failed"] = failed_count
-    data["xfailed"] = xfailed_count
-    data["skipped"] = skipped_count
-    data["duration"] = duration
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-    with open("results/pytest_result.json", "w") as outfile:
-        json.dump(data, outfile)
-```
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+
+## Authors
+
+* **Svyatoslav Gagarin** - *Initial work* - [Nayls](https://github.com/Nayls)
+
+See also the list of [contributors](https://github.com/nayls-cloud/notify/graphs/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
