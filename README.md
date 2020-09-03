@@ -64,32 +64,64 @@ test-project-trigger:
 Pipeline test project
 
 ```yaml
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
 
-.discord:
+stages:
+  - test
+  - inform
+
+e2e:
+  image: python:3.8-alpine
+  stage: test
+  variables:
+    PYTEST_NUMPROCESSES: 4
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    expose_as: 'pytest result'
+    paths:
+      - results/
+    expire_in: 3 days
+  before_script:
+    - apk add --update --no-cache make bash
+    - pip3 install pipenv
+    - pipenv install --system
+  script:
+    - pytest -rsq
+      --strict-markers
+      --tb=short
+      --numprocesses=${PYTEST_NUMPROCESSES}
+      --color=yes
+      --html=results/html/report.html
+  rules:
+    - if: '$CI_MANUAL == "true" || $CI_COMMIT_REF_NAME =~ /^hotfix\//'
+      when: manual
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "trigger"'
+      when: on_success
+    - when: never
+
+discord:
   image: naylscloud/notify:latest
   stage: inform
   variables:
     GIT_STRATEGY: none
     # DISCORD_WEBHOOK: "https://discordapp.com/api/webhooks/<secret>"
     # DISCORD_PING_ROLES: "<@&idrole>" # \@role in discord chat
-    PASSED_VALUE: "undefined"
-    FAILED_VALUE: "undefined"
-    XFAILED_VALUE: "undefined"
-    SKIPPED_VALUE: "undefined"
-    DURATION_VALUE: "undefined"
   dependencies:
     - e2e
-  before_script:
-    - PASSED_VALUE=$(cat results/pytest_result.json | jq -r '.passed')
-    - FAILED_VALUE=$(cat results/pytest_result.json | jq -r '.failed')
-    - XFAILED_VALUE=$(cat results/pytest_result.json | jq -r '.xfailed')
-    - SKIPPED_VALUE=$(cat results/pytest_result.json | jq -r '.skipped')
-    - DURATION_VALUE=$(cat results/pytest_result.json | jq -r '.duration')
   script:
     - discord -v
-```
+  rules:
+    - if: '$CI_MANUAL == "true" || $CI_COMMIT_REF_NAME =~ /^hotfix\//'
+      when: manual
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "trigger"'
+      when: on_success
+    - when: never
 
-```yaml
 slack:
   image: naylscloud/notify:latest
   stage: inform
@@ -97,22 +129,18 @@ slack:
     GIT_STRATEGY: none
     # SLACK_WEBHOOK: "https://hooks.slack.com/services/<secret>"
     # SLACK_CHANNEL: "#general"
-    # SLACK_PING_ROLES: "@nayls"
-    PASSED_VALUE: "undefined"
-    FAILED_VALUE: "undefined"
-    XFAILED_VALUE: "undefined"
-    SKIPPED_VALUE: "undefined"
-    DURATION_VALUE: "undefined"
+    # SLACK_PING_ROLES: "@user_or_role"
   dependencies:
     - e2e
-  before_script:
-    - PASSED_VALUE=$(cat results/pytest_result.json | jq -r '.passed')
-    - FAILED_VALUE=$(cat results/pytest_result.json | jq -r '.failed')
-    - XFAILED_VALUE=$(cat results/pytest_result.json | jq -r '.xfailed')
-    - SKIPPED_VALUE=$(cat results/pytest_result.json | jq -r '.skipped')
-    - DURATION_VALUE=$(cat results/pytest_result.json | jq -r '.duration')
   script:
     - slack -v
+  rules:
+    - if: '$CI_MANUAL == "true" || $CI_COMMIT_REF_NAME =~ /^hotfix\//'
+      when: manual
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "trigger"'
+      when: on_success
+    - when: never
 ```
 
 Add in conftest.py
