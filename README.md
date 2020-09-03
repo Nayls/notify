@@ -1,16 +1,33 @@
+<!--
+Title: Notify
+Description: Docker image with frequently used packages jq, gettext, curl, openssl, ca-certificates, bash, make, and Bash scripts for sending notifications to Discord and Slack about the status of passing Pytest tests.
+Author: Svyatoslav Gagarin (Nayls)
+-->
+
 # Notify
+
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/naylscloud/notify?style=flat-square)
+![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/naylscloud/notify?style=flat-square)
+![MicroBadger Layers](https://img.shields.io/microbadger/layers/naylscloud/notify/latest?style=flat-square)
+
+![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/naylscloud/notify?style=flat-square)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/naylscloud/notify?style=flat-square)
+![Docker Pulls](https://img.shields.io/docker/pulls/naylscloud/notify?style=flat-square)
+![Docker Stars](https://img.shields.io/docker/stars/naylscloud/notify?style=flat-square)
 
 Docker image with frequently used packages `jq`, `gettext`, `curl`, `openssl`, `ca-certificates`, `bash`, `make`, and `Bash` scripts for sending notifications to `Discord` and `Slack` about the status of passing `Pytest` tests.
 
 Implemented only for `PyTest`.
 
-Discord preview
+![notify](https://live.staticflickr.com/65535/50302236153_acb962d466_o.png)
 
-![discord](https://live.staticflickr.com/65535/50298275941_aae42e9dd2_o.png)
+## Supported tags and respective Dockerfile links
 
-Slack preview
+[`1.0`, `latest`](Dockerfile)
 
-![slack](https://live.staticflickr.com/65535/50298276796_2ac3932636_o.png)
+```bash
+docker pull naylscloud/notify
+```
 
 ## Getting Started
 
@@ -234,11 +251,11 @@ slack:
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/nayls-cloud/notify/tags).
 
 ## Authors
 
