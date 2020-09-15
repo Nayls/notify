@@ -1,63 +1,19 @@
 #!/usr/bin/env bash
 
-# SLACK =======================================================================
-: ${SLACK_USERNAME:="AutoTest Informer"}
-: ${SLACK_WEBHOOK:="http://undefined.localhost"}
-: ${SLACK_CHANNEL:="@undefined"}
-: ${SLACK_ICON_URL:="https://img.icons8.com/dusk/100/000000/appointment-reminders.png"}
-: ${SLACK_ATTACHMENT_COLOR:="#76c6f5"}
-: ${SLACK_PING_ROLES:=""}
+set -o errexit
+set -o pipefail
+set -o nounset
+# set -o xtrace
 
-# TEST CI BLOCK ===============================================================
-: ${CI_PAGES_URL:="http://undefined.localhost"}
-: ${CI_SERVER_URL:="http://undefined.localhost"}
-: ${CI_PIPELINE_URL:="http://undefined.localhost"}
-: ${CI_PIPELINE_ID:="undefined"}
-: ${CI_PROJECT_PATH:="undefined/undefined"}
-: ${CI_PROJECT_URL:="http://undefined.localhost"}
+# github.com/nayls-cloud/notify
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# github.com/nayls-cloud/notify/slack.sh
+__file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
+# notify
+__base="$(basename ${__file} .sh)"
+# github.com/nayls-cloud/
+__root="$(cd "$(dirname "${__dir}")" && pwd)"
 
-# TRIGGER PROJECT BLOCK =======================================================
-: ${PRE_CI_SERVER_URL:="http://undefined.localhost"}
-
-: ${PRE_CI_ENVIRONMENT_SLUG:="undefined"}
-: ${PRE_CI_ENVIRONMENT_URL:="http://undefined.localhost"}
-
-: ${PRE_CI_PIPELINE_SOURCE:="undefined"}
-: ${PRE_CI_PIPELINE_URL:="http://undefined.localhost"}
-: ${PRE_CI_PIPELINE_ID:="undefined"}
-
-: ${PRE_CI_COMMIT_REF_NAME:="undefined"}
-: ${PRE_CI_COMMIT_REF_SLUG:="undefined"}
-: ${PRE_CI_COMMIT_SHA:="123123123123123123123"}
-: ${PRE_CI_COMMIT_SHORT_SHA:="12312312"}
-
-: ${PRE_CI_JOB_NAME:="undefined"}
-
-: ${PRE_CI_PROJECT_NAME:="undefined"}
-: ${PRE_CI_PROJECT_TITLE:="undefined"}
-: ${PRE_CI_PROJECT_URL:="http://undefined.localhost"}
-: ${PRE_CI_PROJECT_PATH:="undefined/undefined"}
-
-: ${PRE_GITLAB_USER_NAME:="undefined"}
-: ${PRE_GITLAB_USER_LOGIN:="undefined"}
-: ${PRE_GITLAB_USER_EMAIL:="undefined"}
-
-# PYTEST INFO =================================================================
-: ${PYTEST_RESULT_PATH:="results/pytest_result.json"}
-
-if [ -f "${PYTEST_RESULT_PATH}" ]; then
-    : ${PASSED_VALUE:=$(cat results/pytest_result.json | jq -r '.passed')}
-    : ${FAILED_VALUE:=$(cat results/pytest_result.json | jq -r '.failed')}
-    : ${XFAILED_VALUE:=$(cat results/pytest_result.json | jq -r '.xfailed')}
-    : ${SKIPPED_VALUE:=$(cat results/pytest_result.json | jq -r '.skipped')}
-    : ${DURATION_VALUE:=$(cat results/pytest_result.json | jq -r '.duration')}
-else
-    : ${PASSED_VALUE:="undefined"}
-    : ${FAILED_VALUE:="undefined"}
-    : ${XFAILED_VALUE:="undefined"}
-    : ${SKIPPED_VALUE:="undefined"}
-    : ${DURATION_VALUE:="undefined"}
-fi
 
 generate_post_data()
 {
