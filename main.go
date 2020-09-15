@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "github.com/nayls-cloud/notify/cmd"
+import (
+	"github.com/nayls-cloud/notify/cmd"
+)
 
 func main() {
 	cmd.Execute()

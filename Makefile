@@ -63,7 +63,7 @@ vendor: ## Vendoring packages
 .PHONY: build
 build: ## Build notify
 	@printf "$(OK_COLOR)==>$(NO_COLOR) Build notify\n"
-	CGO_ENABLED=0 GOOS=linux go build \
+	@CGO_ENABLED=0 GOOS=linux go build \
 		-mod vendor \
 		-ldflags " -X 'main.buildDate="$(date)"' " \
 		-installsuffix cgo -o ./bin/notify ./main.go

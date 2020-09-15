@@ -1,21 +1,32 @@
 /*
-Copyright © 2020 Svyatoslav Gagarin
+MIT License
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Copyright (c) 2020 Svyatoslav Gagarin
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 */
+
 package cmd
 
 import (
+	"io"
+	"bufio"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
@@ -30,15 +41,10 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "notify",
 	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: "",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+  // Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -57,11 +63,10 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.notify.yaml)")
+  rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose mode")
+  rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.notify.yaml)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+  viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -88,4 +93,60 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+func verbose(args []string) error {
+  fmt.Println("ROOT VERBOSE")
+
+  // open input file
+  fi, err := os.Open("input.txt")
+  if err != nil {
+    panic(err)
+  }
+  // close fi on exit and check for its returned error
+  defer func() {
+    if err := fi.Close(); err != nil {
+      panic(err)
+    }
+  }()
+  // make a read buffer
+  r := bufio.NewReader(fi)
+
+  // open output file
+  fo, err := os.Create("output.txt")
+  if err != nil {
+    panic(err)
+  }
+  // close fo on exit and check for its returned error
+  defer func() {
+    if err := fo.Close(); err != nil {
+      panic(err)
+    }
+  }()
+  // make a write buffer
+  w := bufio.NewWriter(fo)
+
+  // make a buffer to keep chunks that are read
+  buf := make([]byte, 1024)
+  for {
+    // read a chunk
+    n, err := r.Read(buf)
+    if err != nil && err != io.EOF {
+      panic(err)
+    }
+    if n == 0 {
+      break
+    }
+
+    // write a chunk
+    if _, err := w.Write(buf[:n]); err != nil {
+      panic(err)
+    }
+  }
+
+  if err = w.Flush(); err != nil {
+    panic(err)
+  }
+
+  return nil
 }
