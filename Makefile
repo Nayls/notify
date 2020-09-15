@@ -40,7 +40,7 @@ info:
 	@echo 'IMAGE_NAME: "${IMAGE_NAME}"'
 
 
-all: download build run
+all: download vendor build run
 
 .PHONY: force-build ## Build with vendor and force rebuild
 force-build: download vendor build-force run
@@ -66,7 +66,7 @@ build: ## Build notify
 	CGO_ENABLED=0 GOOS=linux go build \
 		-mod vendor \
 		-ldflags " -X 'main.buildDate="$(date)"' " \
-		-installsuffix cgo -o ./bin/notify ./cmd/notify/main.go
+		-installsuffix cgo -o ./bin/notify ./main.go
 
 .PHONY: build-force
 build-force: ## Force build notify
@@ -75,7 +75,7 @@ build-force: ## Force build notify
 		-a \
 		-mod vendor \
 		-ldflags " -X 'main.buildDate="$(date)"' " \
-		-installsuffix cgo -o ./bin/notify ./cmd/notify/main.go
+		-installsuffix cgo -o ./bin/notify ./main.go
 
 .PHONY: docker-build
 docker-build: ## Build docker image
