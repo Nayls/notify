@@ -56,6 +56,6 @@ func init() {
 	// slackCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func slack_send() {
+func slackSend() {
   fmt.Println("slack send")
 }

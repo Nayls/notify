@@ -25,11 +25,12 @@ SOFTWARE.
 package cmd
 
 import (
-	"io"
 	"bufio"
 	"fmt"
-	"github.com/spf13/cobra"
+	"io"
 	"os"
+
+	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -41,10 +42,10 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "notify",
 	Short: "A brief description of your application",
-	Long: "",
+	Long:  "",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-  // Run: func(cmd *cobra.Command, args []string) { },
+	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -63,10 +64,10 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-  rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose mode")
-  rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.notify.yaml)")
+	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose mode")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.notify.yaml)")
 
-  viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
+	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -96,57 +97,57 @@ func initConfig() {
 }
 
 func verbose(args []string) error {
-  fmt.Println("ROOT VERBOSE")
+	fmt.Println("ROOT VERBOSE")
 
-  // open input file
-  fi, err := os.Open("input.txt")
-  if err != nil {
-    panic(err)
-  }
-  // close fi on exit and check for its returned error
-  defer func() {
-    if err := fi.Close(); err != nil {
-      panic(err)
-    }
-  }()
-  // make a read buffer
-  r := bufio.NewReader(fi)
+	// open input file
+	fi, err := os.Open("input.txt")
+	if err != nil {
+		panic(err)
+	}
+	// close fi on exit and check for its returned error
+	defer func() {
+		if err := fi.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	// make a read buffer
+	r := bufio.NewReader(fi)
 
-  // open output file
-  fo, err := os.Create("output.txt")
-  if err != nil {
-    panic(err)
-  }
-  // close fo on exit and check for its returned error
-  defer func() {
-    if err := fo.Close(); err != nil {
-      panic(err)
-    }
-  }()
-  // make a write buffer
-  w := bufio.NewWriter(fo)
+	// open output file
+	fo, err := os.Create("output.txt")
+	if err != nil {
+		panic(err)
+	}
+	// close fo on exit and check for its returned error
+	defer func() {
+		if err := fo.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	// make a write buffer
+	w := bufio.NewWriter(fo)
 
-  // make a buffer to keep chunks that are read
-  buf := make([]byte, 1024)
-  for {
-    // read a chunk
-    n, err := r.Read(buf)
-    if err != nil && err != io.EOF {
-      panic(err)
-    }
-    if n == 0 {
-      break
-    }
+	// make a buffer to keep chunks that are read
+	buf := make([]byte, 1024)
+	for {
+		// read a chunk
+		n, err := r.Read(buf)
+		if err != nil && err != io.EOF {
+			panic(err)
+		}
+		if n == 0 {
+			break
+		}
 
-    // write a chunk
-    if _, err := w.Write(buf[:n]); err != nil {
-      panic(err)
-    }
-  }
+		// write a chunk
+		if _, err := w.Write(buf[:n]); err != nil {
+			panic(err)
+		}
+	}
 
-  if err = w.Flush(); err != nil {
-    panic(err)
-  }
+	if err = w.Flush(); err != nil {
+		panic(err)
+	}
 
-  return nil
+	return nil
 }

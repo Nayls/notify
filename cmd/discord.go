@@ -40,20 +40,20 @@ var (
 		Short: "Send notify to Discord",
 		Long:  "",
 		Run: func(cmd *cobra.Command, args []string) {
-      if viper.GetBool("verbose") == true {
-        err := verbose(args)
-        if err != nil {
-          fmt.Println("Error:", err)
-          os.Exit(1)
-        }
-      }
+			if viper.GetBool("verbose") == true {
+				err := verbose(args)
+				if err != nil {
+					fmt.Println("Error:", err)
+					os.Exit(1)
+				}
+			}
 
 			err := send(args)
 			if err != nil {
-        fmt.Println("Error:", err)
-	      os.Exit(1)
-      }
-      fmt.Printf("\n%s\n", "You notify complete send")
+				fmt.Println("Error:", err)
+				os.Exit(1)
+			}
+			fmt.Printf("\n%s\n", "You notify complete send")
 		},
 	}
 )
@@ -72,9 +72,9 @@ func init() {
 	// discordCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func send(args []string) error {
+func discordSend(args []string) error {
 	fmt.Println("discord send")
-  fmt.Println("verbose:", viper.GetBool("verbose"))
+	fmt.Println("verbose:", viper.GetBool("verbose"))
 
 	return nil
 }
