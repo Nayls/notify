@@ -26,11 +26,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-
-	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // discordCmd represents the discord command
@@ -43,17 +41,17 @@ var (
 			if viper.GetBool("verbose") == true {
 				err := verbose(args)
 				if err != nil {
-					fmt.Println("Error:", err)
-					os.Exit(1)
+					er(err)
 				}
 			}
 
-			err := send(args)
-			if err != nil {
-				fmt.Println("Error:", err)
-				os.Exit(1)
+			for i := 1; i < 10; i++ {
+				err := discordSend(args, i)
+				if err != nil {
+					er(err)
+				}
+				fmt.Printf("\n%s\n", "You notify complete send")
 			}
-			fmt.Printf("\n%s\n", "You notify complete send")
 		},
 	}
 )
@@ -72,9 +70,8 @@ func init() {
 	// discordCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func discordSend(args []string) error {
-	fmt.Println("discord send")
-	fmt.Println("verbose:", viper.GetBool("verbose"))
+func discordSend(args []string, i int) error {
+	retryClient()
 
 	return nil
 }

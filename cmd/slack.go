@@ -32,14 +32,14 @@ import (
 
 // slackCmd represents the slack command
 var (
-  slackCmd = &cobra.Command{
-    Use:   "slack",
-    Short: "Send notify to Slack",
-    Long: "",
-    Run: func(cmd *cobra.Command, args []string) {
-      slack_send()
-    },
-  }
+	slackCmd = &cobra.Command{
+		Use:   "slack",
+		Short: "Send notify to Slack",
+		Long:  "",
+		Run: func(cmd *cobra.Command, args []string) {
+			slackSend()
+		},
+	}
 )
 
 func init() {
@@ -57,5 +57,5 @@ func init() {
 }
 
 func slackSend() {
-  fmt.Println("slack send")
+	fmt.Println("slack send")
 }
